@@ -1,0 +1,32 @@
+import urllib.request
+import json
+from datetime import datetime, timedelta
+
+def obter_ptax(data):
+    url = f'https://api.exchangerate-api.com/v4/latest/BRL'
+    resposta = urllib.request.urlopen(url)
+    dados = json.loads(resposta.read().decode())
+
+    if data in dados['rates']:
+        return dados['rates'][data]
+    else:
+        return None
+
+# ...
+
+def main():
+    # Obter a cotação do dólar do dia
+    hoje = datetime.now().strftime('%Y-%m-%d')
+    ptax_hoje = obter_ptax('USD')
+
+    if ptax_hoje is not None:
+        # Calcular o valor do real em relação ao dólar
+        ptax_hoje_real = 1 / ptax_hoje
+        print(f'Cotação do dólar de hoje ({hoje}): 1 USD = {ptax_hoje_real:.2f} BRL')
+    else:
+        print('Não foi possível obter a cotação do dólar de hoje.')
+
+    # ...
+
+if __name__ == "__main__":
+    main()
